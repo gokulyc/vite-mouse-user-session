@@ -77,7 +77,7 @@ const IdleTimeOutHandler = (props) => {
   return (
     <div>
       <IdleTimeOutModal
-        showModal={showModal}
+        open = {showModal}
         handleContinue={handleContinueSession}
         handleLogout={handleLogout}
       />
