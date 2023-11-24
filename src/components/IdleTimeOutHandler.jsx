@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { IdleTimeOutModal } from "./idleTimeOutModal";
 
 const IdleTimeOutHandler = (props) => {
@@ -9,7 +9,7 @@ const IdleTimeOutHandler = (props) => {
   const [isLogout, setLogout] = useState(false);
   const eventHandler = (eventType) => {
     console.log(eventType);
-    localStorage.setItem("lastInteractionTime", moment());
+    localStorage.setItem("lastInteractionTime", DateTime.now().toISO());
     if (timer) {
       props.onActive();
       startTimer();
@@ -31,14 +31,15 @@ const IdleTimeOutHandler = (props) => {
     timer = setTimeout(
       () => {
         let lastInteractionTime = localStorage.getItem("lastInteractionTime");
-        const diff = moment.duration(
-          moment().diff(moment(lastInteractionTime))
+        const diff = DateTime.now().diff(
+          DateTime.fromISO(lastInteractionTime),
+          "milliseconds"
         );
         let timeOutInterval = props.timeOutInterval
           ? props.timeOutInterval
           : 6000;
 
-        if (diff._milliseconds < timeOutInterval) {
+        if (diff < timeOutInterval) {
           startTimer();
           props.onActive();
         } else {
